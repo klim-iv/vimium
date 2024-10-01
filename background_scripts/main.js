@@ -235,6 +235,67 @@ function nextZoomLevel(currentZoom, steps) {
   }
 }
 
+function setProxy(request, sender, proxy_type) {
+  const currentTab = request.tab;
+  const tabId = request.tabId;
+  const registryEntry = request.registryEntry;
+
+  if (typeof browser === "undefined" || typeof browser.proxy === "undefined") {
+    chrome.tabs.sendMessage(tabId, {
+      frameId: sender.frameId,
+      handler: "showMessage",
+      message: "Not supported proxy change",
+    });
+    return;
+  }
+
+  var getting = browser.proxy.settings.get({});
+
+  getting.then((got) => {
+    got.value.proxyType = proxy_type;
+
+    var msg;
+    if (proxy_type == "none") {
+      msg = "None proxy";
+    } else if (proxy_type == "autoDetect") {
+      msg = "Auto detect proxy";
+    } else if (proxy_type == "system") {
+      msg = "System proxy";
+    } else if (proxy_type == "manual") {
+      got.value.httpProxyAll = true;
+
+      got.value.http = Settings.get("manualProxyHttp");
+      got.value.socks = Settings.get("manualProxySocks");
+
+      // socks proxy have hight prio
+      if (got.value.socks !== "")
+        got.value.http = "";
+
+      msg = "Manual proxy: " + got.value.http + " / " + got.value.socks;
+    }
+
+    browser.proxy.settings.set({ value: got.value })
+      .then((res) => {
+        if (res) {
+          chrome.tabs.sendMessage(tabId, {
+            frameId: sender.frameId,
+            handler: "showMessage",
+            message: msg,
+          });
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((err) => {
+        chrome.tabs.sendMessage(tabId, {
+          frameId: sender.frameId,
+          handler: "showMessage",
+          message: "Error: " + err.message,
+        });
+      });
+  });
+}
+
 // These are commands which are bound to keystrokes which must be handled by the background page.
 // They are mapped in commands.js.
 const BackgroundCommands = {
@@ -424,6 +485,22 @@ const BackgroundCommands = {
     await forCountTabs(count, tab, (tab) => {
       chrome.tabs.reload(tab.id, { bypassCache });
     });
+  },
+
+  setProxyNone(request, sender) {
+    setProxy(request, sender, "none");
+  },
+
+  setProxyAutodetect(request, sender) {
+    setProxy(request, sender, "autoDetect");
+  },
+
+  setProxySystem(request, sender) {
+    setProxy(request, sender, "system");
+  },
+
+  setProxyManual(request, sender) {
+    setProxy(request, sender, "manual");
   },
 };
 

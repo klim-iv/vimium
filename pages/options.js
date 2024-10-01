@@ -25,6 +25,8 @@ const options = {
   smoothScroll: "boolean",
   userDefinedLinkHintCss: "string",
   waitForEnterForFilteredHints: "boolean",
+  manualProxyHttp: "string",
+  manualProxySocks: "string",
 };
 
 const OptionsPage = {

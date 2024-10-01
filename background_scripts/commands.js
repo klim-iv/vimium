@@ -490,6 +490,11 @@ const defaultKeyMappings = {
   // Misc
   "?": "showHelp",
   "gs": "toggleViewSource",
+
+  "sn": "setProxyNone",
+  "sa": "setProxyAutodetect",
+  "ss": "setProxySystem",
+  "sm": "setProxyManual",
 };
 
 export {

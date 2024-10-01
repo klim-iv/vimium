@@ -614,6 +614,46 @@ const allCommands = [
     noRepeat: true,
     topFrame: true,
   },
+
+  //
+  // Proxy
+  //
+
+  {
+    name: "setProxyNone",
+    desc: "Set proxy to 'No proxy'",
+    group: "misc",
+    background: true,
+    noRepeat: true,
+    advanced: true,
+  },
+
+  {
+    name: "setProxyAutodetect",
+    desc: "Set proxy to 'Auto-detect proxy'",
+    group: "misc",
+    background: true,
+    noRepeat: true,
+    advanced: true,
+  },
+
+  {
+    name: "setProxySystem",
+    desc: "Set proxy to 'Use system proxy'",
+    group: "misc",
+    background: true,
+    noRepeat: true,
+    advanced: true,
+  },
+
+  {
+    name: "setProxyManual",
+    desc: "Set proxy to 'Manual proxy'",
+    group: "misc",
+    background: true,
+    noRepeat: true,
+    advanced: true,
+  },
 ];
 
 export { allCommands };
